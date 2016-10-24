@@ -31,7 +31,7 @@ namespace Tuiles_Glissantes
         );
 
         private bool isShuffling = false;
-        private const int wait = 0;
+        private const int wait = 1;
         private int nbDeplacementsShuffle;
         private int nbDeplacementsResolution;
         private bool showUI;
@@ -96,15 +96,14 @@ namespace Tuiles_Glissantes
         {
             Direction mouvement;
             this.isShuffling = true;
-            int nbCercles = 12;
 
-            int nbMouvementsFait = 0;
+            int nbMouvementsFait = this.RotationCasseTeteAleatoire(-this.positionVide.X, -this.positionVide.Y, nbMouvements);
 
             while (nbMouvementsFait < nbMouvements)
             {
                 nbMouvementsFait += this.RotationCasseTeteAleatoire(
-                    this.rng.Next(this.Largeur) - this.positionVide.X,
-                    this.rng.Next(this.Largeur) - this.positionVide.Y,
+                    this.positionVide.X < (this.Largeur - 1) / 2 ? rng.Next(this.Largeur / 4 * 3, this.Largeur) - this.positionVide.X : rng.Next(0, this.Largeur / 4) - this.positionVide.X,
+                    this.positionVide.Y < (this.Hauteur - 1) / 2 ? rng.Next(this.Hauteur / 4 * 3, this.Hauteur) - this.positionVide.Y : rng.Next(0, this.Hauteur / 4) - this.positionVide.Y,
                     nbMouvements - nbMouvementsFait + 1
                 );
             }
@@ -126,9 +125,9 @@ namespace Tuiles_Glissantes
 
         public int RotationCasseTeteAleatoire(int largeur, int hauteur, int maxMouvements)
         {
-            int valeur = (int)Math.Pow(Math.Abs(largeur) + Math.Abs(hauteur), 2);
-
-            return this.RotationCasseTete(largeur, hauteur, rng.Next(Math.Min(valeur, maxMouvements)));
+            int valeur = (int)Math.Pow(Math.Abs(largeur) + Math.Abs(hauteur) + 8, 2);
+            int min = Math.Min(valeur, maxMouvements);
+            return this.RotationCasseTete(largeur, hauteur, rng.Next(min / 8 * 7, min));
         }
 
         public int RotationCasseTete(int largeur, int hauteur, int nbMouvements)
@@ -271,6 +270,7 @@ namespace Tuiles_Glissantes
         {
             Tuile tuileCourante;
             int noRangee, noColonne;
+            bool modificateur = false;
             for (noRangee = 0; noRangee < this.Hauteur - 2; noRangee++)
             {
                 for (noColonne = 0; noColonne < this.Largeur - 1; noColonne++)
@@ -290,10 +290,19 @@ namespace Tuiles_Glissantes
 
                 if (!this.dictTuiles.EstBienPlacee(noColonne, noRangee))
                 {
-                    this.DeplacerTuileToPosition(this.dictTuiles[noColonne, noRangee], noRangee + 1, noColonne - 1);
+                    tuileCourante = this.dictTuiles[noColonne, noRangee];
+
+                    modificateur = tuileCourante.PositionCourante.Y == noRangee + 1 && tuileCourante.PositionCourante.X < noColonne;
+                    this.DeplacerTuileToPosition(tuileCourante, noRangee + 1, noColonne - 1 - Convert.ToInt32(modificateur));
+
+                    // On met l'espace à gauche
+                    if (positionVide.X == noColonne)
+                    {
+                        this.DeplacerTuileVersDirection(tuileCourante, Direction.Gauche, true);
+                    }
+
+                    this.Embloquer(noRangee, noColonne - 2, noColonne - 1);
                     this.Debloquer(noRangee, noColonne - 2, noColonne);
-                    this.WhileDeplacement(Axe.X, this.dictTuiles[noColonne, noRangee], noColonne);
-                    this.Embloquer(noRangee, noColonne - 2, noColonne);
                 }
             }
 
@@ -386,11 +395,6 @@ namespace Tuiles_Glissantes
 
         private int DeplacerSerieFromVide(Direction directionVide, int nbTuiles)
         {
-            if (true)
-            {
-
-            }
-
             for (int i = 0; i < nbTuiles; i++)
             {
                 this.EchangerAvecVide(this.GetPositionRelative(this.positionVide, directionVide));
