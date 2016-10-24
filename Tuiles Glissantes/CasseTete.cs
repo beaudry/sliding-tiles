@@ -31,7 +31,7 @@ namespace Tuiles_Glissantes
         );
 
         private bool isShuffling = false;
-        private const int wait = 1;
+        private const int wait = 0;
         private int nbDeplacementsShuffle;
         private int nbDeplacementsResolution;
         private bool showUI;
