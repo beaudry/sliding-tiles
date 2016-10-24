@@ -1,22 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System;
 
 namespace Tuiles_Glissantes
 {
     public class Tuile : IEquatable<Tuile>
     {
-        public Tuile(int x, int y, char caractere, ConsoleColor couleur)
-            : this(new Position(x, y), caractere, couleur)
+        public Tuile(int x, int y, char caractere, ConsoleColor couleurPolice, ConsoleColor couleurFond)
+            : this(new Position(x, y), caractere, couleurPolice, couleurFond)
         {
         }
 
-        public Tuile(Position positionDepart, char caractere, ConsoleColor couleur)
+        public Tuile(Position positionDepart, char caractere, ConsoleColor couleurPolice, ConsoleColor couleurFond)
         {
             this.Caractere = caractere;
-            this.Couleur = couleur;
+            this.CouleurPolice = couleurPolice;
+            this.CouleurFond = couleurFond;
             this.PositionCourante = positionDepart;
         }
 
@@ -41,7 +38,7 @@ namespace Tuiles_Glissantes
 
         public override int GetHashCode()
         {
-            return unchecked(this.Caractere.GetHashCode() * 13 + this.Couleur.GetHashCode());
+            return unchecked((this.Caractere.GetHashCode() * 13 + this.CouleurPolice.GetHashCode()) * 13 + this.CouleurFond.GetHashCode());
         }
 
         public bool Equals(Tuile other)
@@ -51,10 +48,11 @@ namespace Tuiles_Glissantes
                 return false;
             }
 
-            return this.Caractere.Equals(other.Caractere) && this.Couleur == other.Couleur;
+            return this.Caractere.Equals(other.Caractere) && this.CouleurPolice == other.CouleurPolice && this.CouleurFond == other.CouleurFond;
         }
 
-        public readonly ConsoleColor Couleur;
+        public readonly ConsoleColor CouleurPolice;
+        public readonly ConsoleColor CouleurFond;
         public readonly char Caractere;
     }
 }
