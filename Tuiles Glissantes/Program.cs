@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Tuiles_Glissantes
 {
@@ -10,42 +10,40 @@ namespace Tuiles_Glissantes
         [STAThread]
         static void Main()
         {
-            int nbTests = 300;
+            int nbTests = 3000;
             Console.CursorVisible = false;
             CasseTete ct;
-            int reussis = 0, echoues = 0, exceptions = 0;
-            for (int i = 0; i < nbTests; i++)
+            //int reussis = 0, echoues = 0, exceptions = 0;
+            uint nbMouvementsResolution = 0;
+            int nbMouvementsShuffle = Int16.MaxValue/4;
+            int curMouvements = 0, meilleurMouvement = int.MaxValue/*, meilleurShuffle = 0*/;
+            ct = new CasseTete(16, 16, true);
+            int start = 1;
+            for (int i = start; i <= nbTests; i++)
             {
-                ct = new CasseTete(16, 15);
-                ct.MelangerCasseTete(9000);
+                ct.MelangerCasseTete(nbMouvementsShuffle);
+  
+                curMouvements = ct.Resoudre();
+                nbMouvementsResolution += (uint)curMouvements;
 
-                try
+                if ((double)nbMouvementsShuffle / meilleurMouvement < (double)nbMouvementsShuffle / curMouvements)
                 {
-                    if (ct.Resoudre())
-                    {
-                        reussis++;
-                    }
-                    else
-                    {
-                        echoues++;
-                    }
-                }
-                catch (Exception)
-                {
-                    exceptions++;
+                    meilleurMouvement = curMouvements;
                 }
 
                 Console.SetCursorPosition(0, ct.Hauteur + 1);
                 Console.ForegroundColor = ConsoleColor.Magenta;
-                Console.WriteLine("Nombre de tests: {0:n0}", reussis + echoues + exceptions);
+                Console.WriteLine("Nombre de tests: {0:n0}", i);
                 Console.WriteLine();
 
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("Réussis: {0:n}%", (double)reussis / (reussis + echoues + exceptions) * 100);
+                Console.Write("Dernier: {0:n0}/{1:0 000}", nbMouvementsShuffle, curMouvements);
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Write(" Échoués: {0:n}%", (double)echoues / (reussis + echoues + exceptions) * 100);
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(" Erreurs: {0:n}%", (double)exceptions / (reussis + echoues + exceptions) * 100);
+
+                //Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write(" Total: {0:n}%", (double)nbMouvementsShuffle * (i - start + 1) / nbMouvementsResolution * 100);
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine(" Déplacements avg: {0:n0} ", nbMouvementsResolution / (i - start + 1));
             }
             Console.ReadKey();
         }
