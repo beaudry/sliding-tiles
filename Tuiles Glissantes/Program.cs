@@ -12,6 +12,7 @@ namespace Tuiles_Glissantes
         {
             int nbTests = 3000;
             Console.CursorVisible = false;
+            Console.Clear();
             CasseTete ct;
             //int reussis = 0, echoues = 0, exceptions = 0;
             uint nbMouvementsResolution = 0;
@@ -21,8 +22,9 @@ namespace Tuiles_Glissantes
             int start = 1;
             for (int i = start; i <= nbTests; i++)
             {
-                ct.MelangerCasseTete(nbMouvementsShuffle);
-  
+                //ct.MelangerCasseTeteAleatoire(nbMouvementsShuffle);
+                //ct.MelangerCasseTeteRotation(nbMouvementsShuffle);
+                nbMouvementsShuffle = ct.InverserCasseTete();
                 curMouvements = ct.Resoudre();
                 nbMouvementsResolution += (uint)curMouvements;
 
