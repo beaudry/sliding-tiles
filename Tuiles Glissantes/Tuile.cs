@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace Tuiles_Glissantes
 {
@@ -15,9 +15,11 @@ namespace Tuiles_Glissantes
             this.CouleurPolice = couleurPolice;
             this.CouleurFond = couleurFond;
             this.PositionCourante = positionDepart;
+            this.PositionDepart = positionDepart;
         }
 
         public Position PositionCourante { get; set; }
+        public readonly Position PositionDepart;
 
         public override bool Equals(object obj)
         {
@@ -38,7 +40,7 @@ namespace Tuiles_Glissantes
 
         public override int GetHashCode()
         {
-            return unchecked((this.Caractere.GetHashCode() * 13 + this.CouleurPolice.GetHashCode()) * 13 + this.CouleurFond.GetHashCode());
+            return this.PositionDepart.GetHashCode();
         }
 
         public bool Equals(Tuile other)
@@ -48,7 +50,32 @@ namespace Tuiles_Glissantes
                 return false;
             }
 
-            return this.Caractere.Equals(other.Caractere) && this.CouleurPolice == other.CouleurPolice && this.CouleurFond == other.CouleurFond;
+            return this.PositionDepart.Equals(other.PositionDepart);
+        }
+
+        public bool EstBienPlacee()
+        {
+            return this.PositionDepart.Equals(this.PositionCourante);
+        }
+
+        public int DistanceFromOrigin()
+        {
+            return this.DistanceFrom(this.PositionDepart);
+        }
+
+        public int DistanceFrom(Tuile other)
+        {
+            return this.DistanceFrom(other.PositionCourante);
+        }
+
+        public int DistanceFrom(Position pos)
+        {
+            return this.DistanceFrom(pos.X, pos.Y);
+        }
+
+        public int DistanceFrom(int x, int y)
+        {
+            return Math.Abs(this.PositionCourante.X - x) + Math.Abs(this.PositionCourante.Y - y);
         }
 
         public readonly ConsoleColor CouleurPolice;

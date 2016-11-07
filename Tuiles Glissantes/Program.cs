@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace Tuiles_Glissantes
 {
@@ -13,19 +13,22 @@ namespace Tuiles_Glissantes
             int nbTests = 3000;
             Console.CursorVisible = false;
             Console.Clear();
-            CasseTete ct;
             //int reussis = 0, echoues = 0, exceptions = 0;
             uint nbMouvementsResolution = 0;
-            int nbMouvementsShuffle = Int16.MaxValue/4;
+            //int nbMouvementsShuffle = (int)Math.Pow(2, 12);
+            int nbMouvementsShuffle = Int16.MaxValue / 4;
             int curMouvements = 0, meilleurMouvement = int.MaxValue/*, meilleurShuffle = 0*/;
-            ct = new CasseTete(16, 16, true);
             int start = 1;
+            Manipulateur ctManip;
+            CasseTete ct = new CasseTete(16, 16, true);
             for (int i = start; i <= nbTests; i++)
             {
-                //ct.MelangerCasseTeteAleatoire(nbMouvementsShuffle);
-                //ct.MelangerCasseTeteRotation(nbMouvementsShuffle);
-                nbMouvementsShuffle = ct.InverserCasseTete();
-                curMouvements = ct.Resoudre();
+                ctManip = new Manipulateur(ct, i);
+
+                //ctManip.MelangerCasseTeteAleatoire(nbMouvementsShuffle);
+                ctManip.MelangerCasseTeteRotation(nbMouvementsShuffle);
+                //nbMouvementsShuffle = ctManip.InverserCasseTete();
+                curMouvements = ctManip.Resoudre();
                 nbMouvementsResolution += (uint)curMouvements;
 
                 if ((double)nbMouvementsShuffle / meilleurMouvement < (double)nbMouvementsShuffle / curMouvements)

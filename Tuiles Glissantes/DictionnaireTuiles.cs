@@ -25,6 +25,11 @@ namespace Tuiles_Glissantes
             set { this[new Position(x, y)] = value; }
         }
 
+        public bool EstBienPlacee(Position pos)
+        {
+            return this.EstBienPlacee(this[pos.X, pos.Y]);
+        }
+
         public bool EstBienPlacee(int x, int y)
         {
             return this.EstBienPlacee(this[x, y]);
