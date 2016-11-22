@@ -100,18 +100,20 @@ namespace Tuiles_Glissantes
             {
                 throw new InvalidOperationException("On ne peut pas échanger avec la cellule vide une case qui ne se trouve pas à côté de la case vide");
             }
-            
-            this[this.PositionVide] = this[posEchange];
-            this[posEchange] = tuileTempo;
-            this.PositionVide = posEchange;
 
-            if (!this.isShuffling)
+            if (!this.PositionVide.Equals(posEchange))
             {
-                this.NbDeplacementsResolution++;
-                System.Threading.Thread.Sleep(wait);
+                this[this.PositionVide] = this[posEchange];
+                this[posEchange] = tuileTempo;
+                this.PositionVide = posEchange;
+
+                if (!this.isShuffling)
+                {
+                    this.NbDeplacementsResolution++;
+                    System.Threading.Thread.Sleep(wait);
+                }
             }
         }
-
         public bool EstTermine()
         {
             bool estTermine = true;
