@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Tuiles_Glissantes
 {
@@ -222,16 +220,12 @@ namespace Tuiles_Glissantes
             switch (direction)
             {
                 case Direction.Haut:
-                    posEchange = new Position(posRelative.X, posRelative.Y - 1);
-                    break;
                 case Direction.Bas:
-                    posEchange = new Position(posRelative.X, posRelative.Y + 1);
+                    posEchange = posRelative.Offset(0, -(int)direction);
                     break;
                 case Direction.Gauche:
-                    posEchange = new Position(posRelative.X - 1, posRelative.Y);
-                    break;
                 case Direction.Droite:
-                    posEchange = new Position(posRelative.X + 1, posRelative.Y);
+                    posEchange = posRelative.Offset(-(int)direction / 2, 0);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -245,9 +239,6 @@ namespace Tuiles_Glissantes
             Tuile tuileCourante;
 
             sac.Add(this.dictTuiles[new Position(0, 0)]);
-            //try
-            //{
-
 
             while (!sac.EstVide())
             {
@@ -267,51 +258,6 @@ namespace Tuiles_Glissantes
                 {
                     sac.AjouterElementTraite(this.PlacerDernieresTuiles(tuileCourante));
                 }
-                //else if (false)
-                //{
-                //    Tuile tuileCourante2 = this.dictTuiles[tuileCourante.PositionDepart.Offset(0, 1)];
-                //    //if (tuileCourante.DistanceFromOrigin() < tuileCourante2.DistanceFromOrigin())
-                //    //{
-                //    //    this.PlacerColonneSurDeuxLignes(tuileCourante.PositionDepart.Y, tuileCourante2.PositionDepart.Y, tuileCourante.PositionDepart.X);
-                //    //}
-                //    //else
-                //    //{
-                //    //    this.PlacerColonneSurDeuxLignes(tuileCourante2.PositionDepart.Y, tuileCourante.PositionDepart.Y, tuileCourante.PositionDepart.X);
-                //    //}
-                //    if (tuileCourante.PositionCourante.Equals(tuileCourante2.PositionDepart) || tuileCourante.PositionCourante.Equals(tuileCourante.PositionCourante.Offset(1, 0)))
-                //    {
-                //        this.DeplacerSerieFromVide(Direction.Bas, tuileCourante.PositionDepart.Y - ct.PositionVide.Y);
-                //        this.DeplacerSerieFromVide(Direction.Gauche, tuileCourante.PositionDepart.X - ct.PositionVide.X);
-                //        this.RotationCasseTete(2, 1, -5);
-                //    }
-                //    else if (tuileCourante.PositionDepart.Equals(ct.PositionVide))
-                //    {
-                //        this.EchangerAvecVide(Direction.Droite);
-                //    }
-
-                //    if (!tuileCourante.EstBienPlacee() || !tuileCourante2.EstBienPlacee())
-                //    {
-                //        if (tuileCourante.EstBienPlacee())
-                //        {
-                //            this.DeplacerSerieFromVide(Direction.Bas, tuileCourante.PositionDepart.Y - ct.PositionVide.Y);
-                //            this.DeplacerSerieFromVide(Direction.Gauche, tuileCourante.PositionDepart.X - ct.PositionVide.X - 1);
-                //            this.EchangerAvecVide(Direction.Gauche);
-                //            this.RotationCasseTete(2, 1, -4);
-                //        }
-                //        this.DeplacerTuileToPosition(tuileCourante2, tuileCourante.PositionDepart.Y, tuileCourante.PositionDepart.X);
-                //        this.DeplacerTuileToPosition(tuileCourante, tuileCourante.PositionDepart.Y, tuileCourante.PositionDepart.X + 1);
-
-                //        if (ct.PositionVide.Y == ct.Hauteur - 1)
-                //        {
-                //            this.RotationCasseTete(-1, -1, 3);
-                //        }
-                //        else
-                //        {
-                //            this.RotationCasseTete(-2, 1, -5);
-                //        }
-                //    }
-                //    sac.AjouterElementTraite(tuileCourante2);
-                //}
                 else
                 {
                     this.DeplacerTuileToPosition(tuileCourante);
@@ -367,12 +313,7 @@ namespace Tuiles_Glissantes
                 else if (tuileCourante.PositionCourante.Y < ct.PositionVide.Y)
                 {
                     this.EchangerAvecVide(Direction.Haut);
-                    //this.EchangerAvecVide(tuileCourante.PositionCourante);
                 }
-                //if (tuileCourante.PositionCourante.X == ct.PositionVide.X)
-                //{
-                //    this.RotationCasseTete(-1, -1, 3);
-                //}
 
                 this.WhileDeplacement(Axe.Y, tuileCourante, noRangee);
 
@@ -399,7 +340,6 @@ namespace Tuiles_Glissantes
             }
 
             this.WhileDeplacement(Axe.Y, tuileCourante, noRangee);
-            //}
         }
 
         private Direction InverserDirection(Direction direction)
@@ -457,81 +397,6 @@ namespace Tuiles_Glissantes
                 }
                 this.DeplacerSerieFromVide(direction, nbTuiles - 1);
             }
-        }
-
-        private void PlacerColonneSurDeuxLignes(int noRangee1, int noRangee2, int noColonne)
-        {
-            Position position1 = new Position(noColonne, noRangee1);
-            Position position2 = new Position(noColonne, noRangee2);
-
-            if (this.dictTuiles[position2].PositionCourante.X == noColonne)
-            {
-                if (ct.PositionVide.Y != noRangee1)
-                {
-                    this.EchangerAvecVide(ct.PositionVide.X, noRangee1);
-                }
-                this.RapprocherTuileVideSingleDirection(noColonne, ct.PositionVide.X, Direction.Gauche, 1);
-                this.RotationCasseTete(-1, noRangee2 - noRangee1, 3);
-                this.RotationCasseTete(1, noRangee1 - noRangee2, 3);
-                this.RotationCasseTete(-1, noRangee2 - noRangee1, -4);
-            }
-            else if (this.dictTuiles[position1].EstBienPlacee() && this.dictTuiles[new Position(noColonne, noRangee2)].PositionCourante.X == noColonne + 1)
-            {
-                if (ct.PositionVide.Y != noRangee2)
-                {
-                    this.EchangerAvecVide(ct.PositionVide.X, noRangee2);
-                }
-                this.RapprocherTuileVideSingleDirection(noColonne, ct.PositionVide.X, Direction.Gauche, 1);
-
-                if (this.dictTuiles[position2].PositionCourante.Y == noRangee2)
-                {
-                    this.RotationCasseTete(-1, noRangee1 - noRangee2, 4);
-                }
-                else
-                {
-                    this.RotationCasseTete(1, noRangee1 - noRangee2, 3);
-                    this.RotationCasseTete(-1, noRangee2 - noRangee1, -3);
-                }
-            }
-
-            this.DeplacerTuileToPosition(this.dictTuiles[position1], noRangee2, noColonne, false);
-
-            if (ct.PositionVide.Y == noRangee1 && ct.PositionVide.X < ct.Largeur - 1)
-            {
-                this.EchangerAvecVide(Direction.Droite);
-            }
-
-            this.DeplacerTuileToPosition(this.dictTuiles[position2], noRangee2, noColonne + 1, false);
-
-            if (ct.PositionVide.Y == noRangee2)
-            {
-                this.EchangerAvecVide(ct.PositionVide.X, ct.PositionVide.Y - noRangee2 + noRangee1);
-            }
-
-            this.DeplacerSerieFromVide(Direction.Gauche, ct.PositionVide.X - noColonne);
-            this.EchangerAvecVide(ct.PositionVide.X, ct.PositionVide.Y - noRangee1 + noRangee2);
-            this.EchangerAvecVide(Direction.Droite);
-        }
-
-        private void Debloquer(int noRangee, int noColonneEntree, int noColonneSortie)
-        {
-            if (!ct.PositionVide.Equals(noColonneEntree, noRangee))
-            {
-                this.DeplacerSerieFromVide(Direction.Droite, noColonneSortie - ct.PositionVide.X);
-                this.DeplacerSerieFromVide(Direction.Haut, ct.PositionVide.Y - noRangee);
-            }
-
-            this.DeplacerSerieFromVide(Direction.Gauche, noColonneSortie - noColonneEntree);
-            this.EchangerAvecVide(Direction.Bas);
-        }
-
-        private void Embloquer(int noRangee, int noColonneEntree, int noColonneSortie)
-        {
-            // Theta(nbTuiles)
-            this.DeplacerSerieFromVide(Direction.Gauche, ct.PositionVide.X - noColonneEntree);
-            this.DeplacerSerieFromVide(Direction.Haut, ct.PositionVide.Y - noRangee);
-            this.DeplacerSerieFromVide(Direction.Droite, noColonneSortie - noColonneEntree);
-            this.EchangerAvecVide(Direction.Bas);
         }
 
         private int DeplacerSerieFromVide(Direction directionVide, int nbTuiles)
@@ -654,24 +519,6 @@ namespace Tuiles_Glissantes
             }
         }
 
-        private Position FlipIfNeeded(Position positionToFlip, bool flipNeeded)
-        {
-            if (flipNeeded)
-            {
-                return new Position(positionToFlip.Y, positionToFlip.X);
-            }
-            return positionToFlip;
-        }
-
-        private Tuple<int, int> FlipIfNeeded(Tuple<int, int> tupleToFlip, bool flipNeeded)
-        {
-            if (flipNeeded)
-            {
-                return new Tuple<int, int>(tupleToFlip.Item2, tupleToFlip.Item1);
-            }
-            return tupleToFlip;
-        }
-
         private Tuile PlacerDernieresTuiles(Tuile tuileCourante)
         {
             Axe axe = (Axe)(Convert.ToInt32(tuileCourante.PositionDepart.X == ct.Largeur - 2) + 1);
@@ -728,7 +575,6 @@ namespace Tuiles_Glissantes
                 {
                     this.DeplacerSerieFromVide(this.InverserDirection((Direction)axe), getCoord1(tuileCourante.PositionDepart) - getCoord1(ct.PositionVide));
                     this.DeplacerSerieFromVide(perpendic, getCoord2(tuileCourante.PositionDepart) - getCoord2(ct.PositionVide));
-                    //this.EchangerAvecVide(perpendic);
                     this.RotationCasseTete(1, 2, 5, flip);
                 }
 
@@ -739,7 +585,7 @@ namespace Tuiles_Glissantes
                 {
                     this.RotationCasseTete(tailleCote - getCoord1(ct.PositionVide) - 1, 1, getCoord1(ct.PositionVide) - tailleCote, flip);
                 }
-                
+
                 if (getCoord1(ct.PositionVide) == tailleCote)
                 {
                     this.DeplacerSerieFromVide(this.InverserDirection(perpendic), getCoord2(ct.PositionVide) - getCoord2(tuileCourante2.PositionDepart) - 1);
