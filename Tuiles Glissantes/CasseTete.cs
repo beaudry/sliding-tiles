@@ -95,6 +95,12 @@ namespace Tuiles_Glissantes
         public void EchangerAvecVide(Position posEchange)
         {
             Tuile tuileTempo = this[this.PositionVide];
+
+            if (tuileTempo.DistanceFrom(posEchange) > 1)
+            {
+                throw new InvalidOperationException("On ne peut pas échanger avec la cellule vide une case qui ne se trouve pas à côté de la case vide");
+            }
+            
             this[this.PositionVide] = this[posEchange];
             this[posEchange] = tuileTempo;
             this.PositionVide = posEchange;
