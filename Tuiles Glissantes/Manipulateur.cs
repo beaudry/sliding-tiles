@@ -245,10 +245,9 @@ namespace Tuiles_Glissantes
                 tuileCourante = sac.RetirerItemMinimum(t => t.DistanceFrom(ct.PositionVide) + 5 * t.DistanceFromOrigin());
                 if (tuileCourante.PositionDepart.Equals(ct.Largeur - 2, ct.Hauteur - 2))
                 {
-                    if (!ct.PositionVide.Equals(ct.Largeur - 1, ct.Hauteur - 1))
-                    {
-                        this.RotationCasseTete(1, 1, 2);
-                    }
+                    this.DeplacerSerieFromVide(Direction.Droite, ct.Largeur - 1 - ct.PositionVide.X);
+                    this.DeplacerSerieFromVide(Direction.Bas, ct.Hauteur - 1 - ct.PositionVide.Y);
+
                     for (int i = 0; i < 4 && !ct.EstTermine(); i++)
                     {
                         this.RotationCasseTete(-1, -1, 4);
