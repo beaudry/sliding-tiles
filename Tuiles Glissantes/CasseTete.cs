@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -95,17 +95,25 @@ namespace Tuiles_Glissantes
         public void EchangerAvecVide(Position posEchange)
         {
             Tuile tuileTempo = this[this.PositionVide];
-            this[this.PositionVide] = this[posEchange];
-            this[posEchange] = tuileTempo;
-            this.PositionVide = posEchange;
 
-            if (!this.isShuffling)
+            if (tuileTempo.DistanceFrom(posEchange) > 1)
             {
-                this.NbDeplacementsResolution++;
-                System.Threading.Thread.Sleep(wait);
+                throw new InvalidOperationException("On ne peut pas échanger avec la cellule vide une case qui ne se trouve pas à côté de la case vide");
+            }
+
+            if (!this.PositionVide.Equals(posEchange))
+            {
+                this[this.PositionVide] = this[posEchange];
+                this[posEchange] = tuileTempo;
+                this.PositionVide = posEchange;
+
+                if (!this.isShuffling)
+                {
+                    this.NbDeplacementsResolution++;
+                    System.Threading.Thread.Sleep(wait);
+                }
             }
         }
-
         public bool EstTermine()
         {
             bool estTermine = true;

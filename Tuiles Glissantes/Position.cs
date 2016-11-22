@@ -1,4 +1,6 @@
-﻿namespace Tuiles_Glissantes
+using System;
+
+namespace Tuiles_Glissantes
 {
     public struct Position
     {
@@ -14,6 +16,20 @@
         public bool Equals(int x, int y)
         {
             return this.Equals(new Position(x, y));
+        }
+
+        public Position Offset(int xOffset, int yOffset, bool flip)
+        {
+            if (flip)
+            {
+                return this.Offset(yOffset, xOffset);
+            }
+            return this.Offset(xOffset, yOffset);
+        }
+
+        public Position Offset(int xOffset, int yOffset)
+        {
+            return new Position(this.X + xOffset, this.Y + yOffset);
         }
     }
 }
