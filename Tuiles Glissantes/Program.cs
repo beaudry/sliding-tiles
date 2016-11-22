@@ -16,7 +16,7 @@ namespace Tuiles_Glissantes
             //int reussis = 0, echoues = 0, exceptions = 0;
             uint nbMouvementsResolution = 0;
             //int nbMouvementsShuffle = (int)Math.Pow(2, 12);
-            int nbMouvementsShuffle = Int16.MaxValue / 128;
+            int nbMouvementsShuffle = Int16.MaxValue/4;
             int curMouvements = 0, meilleurMouvement = int.MaxValue/*, meilleurShuffle = 0*/;
             int start = 1;
             Manipulateur ctManip;
@@ -26,8 +26,8 @@ namespace Tuiles_Glissantes
                 ctManip = new Manipulateur(ct, i);
 
                 //ctManip.MelangerCasseTeteAleatoire(nbMouvementsShuffle);
-                ctManip.MelangerCasseTeteRotation(nbMouvementsShuffle);
-                //nbMouvementsShuffle = ctManip.InverserCasseTete();
+                //ctManip.MelangerCasseTeteRotation(nbMouvementsShuffle);
+                nbMouvementsShuffle = ctManip.InverserCasseTete();
                 curMouvements = ctManip.Resoudre();
                 nbMouvementsResolution += (uint)curMouvements;
 
