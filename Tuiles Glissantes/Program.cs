@@ -16,11 +16,12 @@ namespace Tuiles_Glissantes
             //int reussis = 0, echoues = 0, exceptions = 0;
             uint nbMouvementsResolution = 0;
             //int nbMouvementsShuffle = (int)Math.Pow(2, 12);
-            int nbMouvementsShuffle = Int16.MaxValue / 128;
+            int nbMouvementsShuffle = Int16.MaxValue / 16;
             int curMouvements = 0, meilleurMouvement = int.MaxValue/*, meilleurShuffle = 0*/;
             int start = 1;
             Manipulateur ctManip;
             CasseTete ct = new CasseTete(16, 16, true);
+            //ctManip = new Manipulateur(ct);
             for (int i = start; i <= nbTests; i++)
             {
                 ctManip = new Manipulateur(ct, i);

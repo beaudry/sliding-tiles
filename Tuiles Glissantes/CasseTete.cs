@@ -53,13 +53,24 @@ namespace Tuiles_Glissantes
             }
         }
 
+        private char ObtenirCaractereRangee(int rangee){
+            rangee += 48;
+
+            if (rangee > 122)
+            {
+                rangee += 70; 
+            }
+
+            return (char) rangee;
+        }
+
         private void RemplirCasseTete()
         {
             for (int j = 0; j < this.Hauteur; j++)
             {
                 for (int i = 0; i < this.Largeur && j + i < this.Hauteur + this.Largeur - 2; i++)
                 {
-                    this[j, i] = new Tuile(i, j, (char)(i + 48), (ConsoleColor)15 - j % 8, (ConsoleColor)(j / 8));
+                    this[j, i] = new Tuile(i, j, this.ObtenirCaractereRangee(i), (ConsoleColor)15 - j % 8, (ConsoleColor)(j / 8));
                 }
             }
             this.PositionVide = new Position(this.Largeur - 1, this.Hauteur - 1);
