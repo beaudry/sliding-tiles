@@ -9,15 +9,16 @@ namespace Tuiles_Glissantes
         private Tuile[,] tuiles;
 
         private bool isShuffling = false;
-        private const int wait = 0;
+        private int wait;
         private int nbDeplacementsShuffle;
         private bool showUI;
 
-        public CasseTete(int largeur, int hauteur, bool showUI = true)
+        public CasseTete(int largeur, int hauteur, bool showUI = true, int wait = 0)
         {
             this.tuiles = new Tuile[hauteur, largeur];
             this.showUI = showUI;
             this.RemplirCasseTete();
+            this.wait = wait;
         }
 
         public int NbDeplacementsResolution { get; private set; }
