@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -80,18 +80,25 @@ namespace Tuiles_Glissantes
             return mouvements;
         }
 
-        public void MelangerCasseTeteAleatoire(int nbMouvements)
+        public int MelangerCasseTeteAleatoire()
+        {
+            return this.MelangerCasseTeteAleatoire(int.MaxValue, true);
+        }
+
+        public int MelangerCasseTeteAleatoire(int nbMouvements, bool arreterSiMelangeComplet = false)
         {
             Direction mouvement;
             ct.ShuffleStart();
-
-            for (int i = 0; i < nbMouvements; i++)
+            int nbMouvementsFait;
+            for (nbMouvementsFait = 0; nbMouvementsFait < nbMouvements && (!arreterSiMelangeComplet || !ct.EstCompletementMelange()); nbMouvementsFait++)
             {
                 mouvement = this.ObtenirDirectionAleatoireFromVide();
                 this.EchangerAvecVide(mouvement);
                 this.dernierMouvement = mouvement;
             }
-            ct.ShuffleStop(nbMouvements);
+            ct.ShuffleStop(nbMouvementsFait);
+
+            return nbMouvementsFait;
         }
 
         private int tailleCoteGrandeRotationAleatoire(int position, int tailleCote)
@@ -101,26 +108,33 @@ namespace Tuiles_Glissantes
                 rng.Next(0, tailleCote / 5) - position;
         }
 
-        public void MelangerCasseTeteRotation(int nbMouvements)
+        public int MelangerCasseTeteRotation()
+        {
+            return this.MelangerCasseTeteRotation(int.MaxValue - 1, true);
+        }
+
+        public int MelangerCasseTeteRotation(int nbMouvements, bool arreterSiMelangeComplet = false)
         {
             int nbMouvementsFait = 0;
             ct.ShuffleStart();
-            while (nbMouvementsFait < nbMouvements)
+            while (nbMouvementsFait < nbMouvements && (!arreterSiMelangeComplet || !ct.EstCompletementMelange()))
             {
                 nbMouvementsFait += this.RotationCasseTeteAleatoire(
                     this.tailleCoteGrandeRotationAleatoire(ct.PositionVide.X, ct.Largeur),
                     this.tailleCoteGrandeRotationAleatoire(ct.PositionVide.Y, ct.Hauteur),
-                    nbMouvements - nbMouvementsFait + 1
+                    nbMouvements - nbMouvementsFait
                 );
             }
-            ct.ShuffleStop(nbMouvements);
+            ct.ShuffleStop(nbMouvementsFait);
+
+            return nbMouvementsFait;
         }
 
         public int RotationCasseTeteAleatoire(int largeur, int hauteur, int maxMouvements)
         {
             int valeur = (int)Math.Pow(Math.Abs(largeur) + Math.Abs(hauteur), 2) / 2;
             int min = Math.Min(valeur, maxMouvements);
-            return this.RotationCasseTete(largeur, hauteur, rng.Next(min, min * 3));
+            return this.RotationCasseTete(largeur, hauteur, Math.Min(rng.Next(min, min * 3), maxMouvements));
         }
 
         public int RotationCasseTete(int largeur, int hauteur, int nbMouvements, bool miroir)
@@ -247,7 +261,6 @@ namespace Tuiles_Glissantes
                 {
                     this.DeplacerSerieFromVide(Direction.Droite, ct.Largeur - 1 - ct.PositionVide.X);
                     this.DeplacerSerieFromVide(Direction.Bas, ct.Hauteur - 1 - ct.PositionVide.Y);
-
                     for (int i = 0; i < 4 && !ct.EstTermine(); i++)
                     {
                         this.RotationCasseTete(-1, -1, 4);
@@ -459,7 +472,7 @@ namespace Tuiles_Glissantes
 
             Direction directionPerpendic = PlacerVidePourAxe(axe, tuile.PositionCourante);
 
-            if (direction == Direction.Haut && tuile.PositionCourante.X == ct.Largeur - 1 ||
+            if (axe == Axe.Y && tuile.PositionCourante.X == ct.Largeur - 1 ||
                 axe == Axe.X && tuile.PositionCourante.Y == ct.Hauteur - 1)
             {
                 directionPerpendic = this.InverserDirection(directionPerpendic);
@@ -572,8 +585,15 @@ namespace Tuiles_Glissantes
             {
                 if (tuileCourante.EstBienPlacee())
                 {
-                    this.DeplacerSerieFromVide(this.InverserDirection((Direction)axe), getCoord1(tuileCourante.PositionDepart) - getCoord1(ct.PositionVide));
-                    this.DeplacerSerieFromVide(perpendic, getCoord2(tuileCourante.PositionDepart) - getCoord2(ct.PositionVide));
+                    if (ct.PositionVide.Equals(tuileCourante2.PositionDepart))
+                    {
+                        this.RotationCasseTete(-1, 1, -3, flip);
+                    }
+                    else
+                    {
+                        this.DeplacerSerieFromVide(this.InverserDirection((Direction)axe), getCoord1(tuileCourante.PositionDepart) - getCoord1(ct.PositionVide));
+                        this.DeplacerSerieFromVide(perpendic, getCoord2(tuileCourante.PositionDepart) - getCoord2(ct.PositionVide));
+                    }
                     this.RotationCasseTete(1, 2, 5, flip);
                 }
 

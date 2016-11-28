@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -17,7 +17,7 @@ namespace Tuiles_Glissantes
         {
             this.tuiles = new Tuile[hauteur, largeur];
             this.showUI = showUI;
-            this.RemplirCasseTete();
+            this.Init();
             this.wait = wait;
         }
 
@@ -54,15 +54,23 @@ namespace Tuiles_Glissantes
             }
         }
 
-        private char ObtenirCaractereRangee(int rangee){
+        private char ObtenirCaractereRangee(int rangee)
+        {
             rangee += 48;
 
             if (rangee > 122)
             {
-                rangee += 70; 
+                rangee += 70;
             }
 
-            return (char) rangee;
+            return (char)rangee;
+        }
+
+        private void Init()
+        {
+            Console.WindowHeight = this.Hauteur;
+            Console.WindowWidth = Math.Max(this.Largeur, 80);
+            this.RemplirCasseTete();
         }
 
         private void RemplirCasseTete()
@@ -122,7 +130,11 @@ namespace Tuiles_Glissantes
                 if (!this.isShuffling)
                 {
                     this.NbDeplacementsResolution++;
-                    System.Threading.Thread.Sleep(wait);
+
+                    if (this.wait > 0)
+                    {
+                        System.Threading.Thread.Sleep(wait);
+                    }
                 }
             }
         }
@@ -139,6 +151,22 @@ namespace Tuiles_Glissantes
             }
 
             return estTermine;
+        }
+
+        public bool EstCompletementMelange()
+        {
+            bool estCompletementMelange = true;
+            foreach (var tuile in this.tuiles)
+            {
+                if (tuile.EstBienPlacee())
+                {
+                    estCompletementMelange = false;
+                    break;
+                }
+            }
+
+            return estCompletementMelange;
+
         }
     }
 }
